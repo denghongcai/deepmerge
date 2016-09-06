@@ -10,40 +10,41 @@
 
 return function deepmerge(target, src) {
     var array = Array.isArray(src);
-    var dst = array && [] || {};
+    var dst, len, srcKeys, key, i = 0;
 
     if (array) {
         target = target || [];
-        dst = dst.concat(target);
-        src.forEach(function(e, i) {
+        dst = target;
+        len = src.length;
+        for (i = 0; i < len; i++) {
             if (typeof dst[i] === 'undefined') {
-                dst[i] = e;
-            } else if (typeof e === 'object') {
-                dst[i] = deepmerge(target[i], e);
+                dst[i] = src[i];
+            } else if (typeof src[i] === 'object') {
+                dst[i] = deepmerge(target[i], src[i]);
             } else {
-                if (target.indexOf(e) === -1) {
-                    dst.push(e);
+                if (target.indexOf(src[i]) === -1) {
+                    dst.push(src[i]);
                 }
             }
-        });
-    } else {
-        if (target && typeof target === 'object') {
-            Object.keys(target).forEach(function (key) {
-                dst[key] = target[key];
-            })
         }
-        Object.keys(src).forEach(function (key) {
+    } else {
+    	dst = target;
+    	srcKeys = Object.keys(src);
+    	len = srcKeys.length;
+    	for (i = 0; i < len; i++) {
+    		key = srcKeys[i];
             if (typeof src[key] !== 'object' || !src[key]) {
                 dst[key] = src[key];
-            }
-            else {
+            } else {
                 if (!target[key]) {
                     dst[key] = src[key];
+                } else if (typeof src[key] !== typeof target[key]) {
+                	dst[key] = src[key];
                 } else {
                     dst[key] = deepmerge(target[key], src[key]);
                 }
             }
-        });
+    	}
     }
 
     return dst;
