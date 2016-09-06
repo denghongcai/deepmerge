@@ -17,6 +17,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "lodash": "^4.15.0",
     "tap": "~0.4.8"
   },
   "license": "MIT"
